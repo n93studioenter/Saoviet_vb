@@ -115,7 +115,7 @@ Begin VB.Form FrmChungtu
    End
    Begin VB.Timer Timer4 
       Enabled         =   0   'False
-      Interval        =   250
+      Interval        =   500
       Left            =   9600
       Top             =   600
    End
@@ -3191,7 +3191,7 @@ Public Sub AutoCLickLoai()
     RFocus CboThang
     DisplayFileImportList
 End Sub
-Public Sub AddImportData(ByVal id As String, ByVal Name As String, ByVal mst As String, ByVal sohd As String, ByVal khHD As String, ByVal ngay As Date, ByVal types As String, ByVal path As String, ByVal tkno As String, ByVal TkCo As String, ByVal tkThue As String, ByVal diengiai As String, ByVal TongTien As String, ByVal VAT As String, ByVal sohieutp As String, ByVal TgTCThue As String, ByVal TgTThue As String)
+Public Sub AddImportData(ByVal id As String, ByVal Name As String, ByVal mst As String, ByVal sohd As String, ByVal khHD As String, ByVal ngay As Date, ByVal Types As String, ByVal path As String, ByVal tkno As String, ByVal TkCo As String, ByVal tkThue As String, ByVal diengiai As String, ByVal TongTien As String, ByVal VAT As String, ByVal sohieutp As String, ByVal TgTCThue As String, ByVal TgTThue As String)
     Dim fileImport As ClsFileImport
     Set fileImport = New ClsFileImport
 
@@ -3202,7 +3202,7 @@ Public Sub AddImportData(ByVal id As String, ByVal Name As String, ByVal mst As 
     fileImport.sohd = sohd
     fileImport.khHD = khHD
     fileImport.ngay = ngay
-    fileImport.types = types
+    fileImport.Types = Types
     fileImport.patTH = path
     fileImport.cotk = TkCo
     fileImport.notk = tkno
@@ -3420,7 +3420,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
         RFocus CboThang
     End If
 
-    If item.notk Like "511*" Then
+    If item.cotk Like "511*" Then
         ' If item.notk = "5111" Then
         OptLoai(8).Value = True
         OptLoai_LostFocus 8
@@ -3473,8 +3473,14 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
 
     ' txtchungtu(0).Text = 6422
     With fileImportList(IndexFirst)
-        txtchungtu(0).Text = .notk
-        tempchungtu = .notk
+        If item.notk Like "64*" Or item.notk Like "15*" Then
+            txtchungtu(0).Text = .notk
+            tempchungtu = .notk
+        Else
+            txtchungtu(0).Text = .cotk
+            tempchungtu = .cotk
+        End If
+
     End With
 
 
@@ -3529,7 +3535,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
 
         ' Ki?m tra xem Recordset có d? li?u không
         If Not rs_ktra152.EOF Then
-            txtchungtu(0).Text = rs_ktra152!tkno
+            txtchungtu(0).Text = rs_ktra152!TkCo
             txtChungtu_LostFocus (0)
             'MsgBox rs_ktra152!sohieu
             If rs_ktra152!MaCT <> "" Then
@@ -3560,7 +3566,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
                     Dim rs_ktra1544 As Recordset
                     Set rs_ktra1544 = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
                     If Not rs_ktra1544.EOF Then
-                        txtchungtu(0).Text = .notk
+                        txtchungtu(0).Text = .cotk
                         txtChungtu_LostFocus (0)
                         RFocus txtchungtu(1)
                         txtChungtu_LostFocus (1)
@@ -3569,7 +3575,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
                         txtChungtu_LostFocus (2)
                     Else
                         'TRuong hop binh thuong
-                        txtchungtu(0).Text = .notk
+                        txtchungtu(0).Text = .cotk
                         txtChungtu_LostFocus (0)
                         RFocus txtchungtu(1)
                         txtChungtu_LostFocus (1)
@@ -3602,7 +3608,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
             RFocus txtchungtu(2)
             txtchungtu(2).Text = rs_ktra154!sohieu
             txtChungtu_LostFocus (2)
-            txtchungtu(5).Text = item.TongTien
+            txtchungtu(5).Text = item.TgTCThue
             txtChungtu_LostFocus (5)
             RFocus txtchungtu(6)
             txtChungtu_KeyPress 6, 13
@@ -3610,7 +3616,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
         Else
             'Kiem tra xem co con hay khogn
             With fileImportList(IndexFirst)
-             Query = "SELECT * FROM tbimportdetail WHERE ParentId='" & .id & "'"
+                Query = "SELECT * FROM tbimportdetail WHERE ParentId='" & .id & "'"
             End With
 
             Dim rs_check As Recordset
@@ -3632,6 +3638,8 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
             txtChungtu_LostFocus (0)
             txtchungtu(2).Text = item.VAT
             txtChungtu_LostFocus (2)
+            txtchungtu(5).Text = item.TgTThue
+            txtChungtu_LostFocus (5)
             RFocus txtchungtu(6)
             txtChungtu_KeyPress 6, 13
             '1111
@@ -6910,7 +6918,7 @@ Function kiemtralicenkey() As Boolean
     Dim rs_ktra As Recordset
     Dim Query As String
     Dim rst As String
-    Dim types As Integer
+    Dim Types As Integer
     Dim sochungtu As Double
     Query = "SELECT *  FROM tbLicensekey"
     Set rs_ktra = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
@@ -6919,7 +6927,7 @@ Function kiemtralicenkey() As Boolean
         Do While Not rs_ktra.EOF
             Dim resultArray() As String
             sochungtu = CDbl(rs_ktra!Totals)
-            types = CInt(rs_ktra!Type)
+            Types = CInt(rs_ktra!Type)
             rs_ktra.MoveNext
         Loop
     End If
@@ -6929,7 +6937,7 @@ Function kiemtralicenkey() As Boolean
     Dim rss As Recordset
 
     'N?u dang ky vinh vien
-    If types = 1 And sochungtu > 0 Then
+    If Types = 1 And sochungtu > 0 Then
         If (SelectSQL("SELECT count(*) as F1 FROM HoaDon ") >= sochungtu) Then
             Command(0).Enabled = False
             Command(1).Enabled = False
@@ -6940,7 +6948,7 @@ Function kiemtralicenkey() As Boolean
         End If
 
     End If
-    If types = 2 And sochungtu <> 0 Then
+    If Types = 2 And sochungtu <> 0 Then
         If (SelectSQL("SELECT count(*) as F1 FROM HoaDon ") >= sochungtu) Then
             Command(0).Enabled = False
             Command(1).Enabled = False
@@ -6950,7 +6958,7 @@ Function kiemtralicenkey() As Boolean
             Command(1).Enabled = True
         End If
     End If
-    If types = -1 Then
+    If Types = -1 Then
         Command(0).Enabled = False
         Command(1).Enabled = False
         KT = False
@@ -7749,7 +7757,12 @@ Private Sub Timer4_Timer()
     If Not rs_ktra152.EOF Then
         Timer4.Enabled = False
         'txtchungtu(0).Text = tempchungtu
-        txtchungtu(0).Text = rs_ktra152!tkno
+        'cotk
+        If txtchungtu(0).Text Like "15*" Or txtchungtu(0).Text Like "64*" Then
+            txtchungtu(0).Text = rs_ktra152!tkno
+        Else
+            txtchungtu(0).Text = rs_ktra152!TkCo
+        End If
         txtChungtu_LostFocus (0)
         ' truong hop la co hang hoa
         If Not txtchungtu(0).Text Like "642*" Then
@@ -7762,7 +7775,7 @@ Private Sub Timer4_Timer()
                 txtchungtu(6).Text = rs_ktra152!ttien
                 txtChungtu_KeyPress 6, 13
             Else
-                If Not rs_ktra152!tkno Like "5113*" Then
+                If Not rs_ktra152!TkCo Like "5113*" Then
                     RFocus txtchungtu(2)
                     txtchungtu(2).Text = rs_ktra152!sohieu
                     txtChungtu_LostFocus (2)
@@ -7770,12 +7783,14 @@ Private Sub Timer4_Timer()
                     txtChungtu_LostFocus (3)
                     RFocus txtchungtu(4)
 
-                    If rs_ktra152!tkno Like "511*" Then
+                    If rs_ktra152!TkCo Like "511*" Then
                         txtchungtu(6).Text = rs_ktra152!ttien
-                        txtChungtu_LostFocus (6)
+                        txtChungtu_KeyPress 6, 13
+                        'txtChungtu_LostFocus (6)
                     Else
                         txtchungtu(5).Text = rs_ktra152!ttien
                         txtChungtu_LostFocus (5)
+                        txtChungtu_KeyPress 6, 13
                     End If
                 Else
                     txtchungtu(3).Text = 0
@@ -7785,9 +7800,10 @@ Private Sub Timer4_Timer()
                     txtchungtu(5).Text = 0
                     txtChungtu_LostFocus (5)
                     txtchungtu(6).Text = rs_ktra152!dongia
+                    txtChungtu_KeyPress 6, 13
                 End If
                 'RFocus txtchungtu(6)
-                txtChungtu_KeyPress 6, 13
+
             End If
 
             rs_ktra152.MoveNext
@@ -7839,7 +7855,7 @@ Private Sub Timer4_Timer()
 
         'Xu ly cac  tai khoan 1331, 1111
         With fileImportList(IndexFirst)
-            If Not .notk Like "511*" Then
+            If Not .cotk Like "511*" Then
                 txtchungtu(0) = .ThueTK
                 'txtchungtu(0).Text = "1331"
             Else
@@ -7860,8 +7876,14 @@ Private Sub Timer4_Timer()
             txtChungtu_LostFocus (0)
             txtchungtu(2).Text = .VAT
             txtChungtu_LostFocus (2)
+            txtchungtu(6).Text = .TgTThue
             txtChungtu_KeyPress 6, 13
-            txtchungtu(0) = .cotk
+            If Not .cotk Like "511*" Then
+                txtchungtu(0) = .cotk
+            Else
+                txtchungtu(0) = .notk
+            End If
+
             txtChungtu_LostFocus (0)
             txtChungtu_KeyPress 6, 13
             Timer5.Enabled = True
