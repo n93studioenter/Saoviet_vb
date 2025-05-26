@@ -115,7 +115,7 @@ Begin VB.Form FrmChungtu
    End
    Begin VB.Timer Timer4 
       Enabled         =   0   'False
-      Interval        =   500
+      Interval        =   300
       Left            =   9600
       Top             =   600
    End
@@ -139,7 +139,7 @@ Begin VB.Form FrmChungtu
       Height          =   375
       Left            =   120
       TabIndex        =   165
-      Top             =   4710
+      Top             =   4680
       Width           =   1575
    End
    Begin VB.TextBox Text1 
@@ -3191,7 +3191,7 @@ Public Sub AutoCLickLoai()
     RFocus CboThang
     DisplayFileImportList
 End Sub
-Public Sub AddImportData(ByVal id As String, ByVal Name As String, ByVal mst As String, ByVal sohd As String, ByVal khHD As String, ByVal ngay As Date, ByVal Types As String, ByVal path As String, ByVal tkno As String, ByVal TkCo As String, ByVal tkThue As String, ByVal diengiai As String, ByVal TongTien As String, ByVal VAT As String, ByVal sohieutp As String, ByVal TgTCThue As String, ByVal TgTThue As String)
+Public Sub AddImportData(ByVal id As String, ByVal Name As String, ByVal mst As String, ByVal sohd As String, ByVal khHD As String, ByVal ngay As Date, ByVal types As String, ByVal path As String, ByVal tkno As String, ByVal TkCo As String, ByVal tkThue As String, ByVal diengiai As String, ByVal TongTien As String, ByVal VAT As String, ByVal sohieutp As String, ByVal TgTCThue As String, ByVal TgTThue As String)
     Dim fileImport As ClsFileImport
     Set fileImport = New ClsFileImport
 
@@ -3202,7 +3202,7 @@ Public Sub AddImportData(ByVal id As String, ByVal Name As String, ByVal mst As 
     fileImport.sohd = sohd
     fileImport.khHD = khHD
     fileImport.ngay = ngay
-    fileImport.Types = Types
+    fileImport.types = types
     fileImport.patTH = path
     fileImport.cotk = TkCo
     fileImport.notk = tkno
@@ -3402,7 +3402,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
     End If
 
     ' If item.notk = "6422" Or item.notk = "6421" Then
-    If item.notk Like "642*" Or item.notk Like "242*" Then
+    If item.notk Like "642*" Or item.notk Like "242*" Or item.notk Like "635*" Then
         OptLoai(0).Value = True
         OptLoai_LostFocus 0
         RFocus CboThang
@@ -3473,7 +3473,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
 
     ' txtchungtu(0).Text = 6422
     With fileImportList(IndexFirst)
-        If item.notk Like "64*" Or item.notk Like "15*" Then
+        If item.notk Like "64*" Or item.notk Like "15*" Or item.notk Like "63*" Then
             txtchungtu(0).Text = .notk
             tempchungtu = .notk
         Else
@@ -3704,7 +3704,7 @@ Private Sub Xulyimport(ByVal item As ClsFileImport)
 
     End If
 
-    If txtchungtu(0).Text Like "642*" Or txtchungtu(0).Text Like "242*" Then
+    If txtchungtu(0).Text Like "642*" Or txtchungtu(0).Text Like "242*" Or txtchungtu(0).Text Like "635*" Then
         'If (txtchungtu(0).Text = "6422") Then
         With fileImportList(IndexFirst)
             MedNgay(0).Text = Format(.ngay, "dd/mm/yy")
@@ -6918,7 +6918,7 @@ Function kiemtralicenkey() As Boolean
     Dim rs_ktra As Recordset
     Dim Query As String
     Dim rst As String
-    Dim Types As Integer
+    Dim types As Integer
     Dim sochungtu As Double
     Query = "SELECT *  FROM tbLicensekey"
     Set rs_ktra = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
@@ -6927,7 +6927,7 @@ Function kiemtralicenkey() As Boolean
         Do While Not rs_ktra.EOF
             Dim resultArray() As String
             sochungtu = CDbl(rs_ktra!Totals)
-            Types = CInt(rs_ktra!Type)
+            types = CInt(rs_ktra!Type)
             rs_ktra.MoveNext
         Loop
     End If
@@ -6937,7 +6937,7 @@ Function kiemtralicenkey() As Boolean
     Dim rss As Recordset
 
     'N?u dang ky vinh vien
-    If Types = 1 And sochungtu > 0 Then
+    If types = 1 And sochungtu > 0 Then
         If (SelectSQL("SELECT count(*) as F1 FROM HoaDon ") >= sochungtu) Then
             Command(0).Enabled = False
             Command(1).Enabled = False
@@ -6948,7 +6948,7 @@ Function kiemtralicenkey() As Boolean
         End If
 
     End If
-    If Types = 2 And sochungtu <> 0 Then
+    If types = 2 And sochungtu <> 0 Then
         If (SelectSQL("SELECT count(*) as F1 FROM HoaDon ") >= sochungtu) Then
             Command(0).Enabled = False
             Command(1).Enabled = False
@@ -6958,7 +6958,7 @@ Function kiemtralicenkey() As Boolean
             Command(1).Enabled = True
         End If
     End If
-    If Types = -1 Then
+    If types = -1 Then
         Command(0).Enabled = False
         Command(1).Enabled = False
         KT = False
@@ -7876,12 +7876,17 @@ Private Sub Timer4_Timer()
             txtChungtu_LostFocus (0)
             txtchungtu(2).Text = .VAT
             txtChungtu_LostFocus (2)
-            txtchungtu(6).Text = .TgTThue
-            txtChungtu_KeyPress 6, 13
-            If Not .cotk Like "511*" Then
-                txtchungtu(0) = .cotk
-            Else
+
+
+            If .cotk Like "511*" Then
+                txtchungtu(6).Text = .TgTThue
+                txtChungtu_KeyPress 6, 13
                 txtchungtu(0) = .notk
+            Else
+                txtchungtu(5).Text = .TgTThue
+               ' txtChungtu_KeyPress 5, 13
+                txtChungtu_KeyPress 6, 13
+                txtchungtu(0) = .cotk
             End If
 
             txtChungtu_LostFocus (0)
