@@ -7758,6 +7758,7 @@ Private Sub Timer4_Timer()
         Timer4.Enabled = False
         'txtchungtu(0).Text = tempchungtu
         'cotk
+
         If txtchungtu(0).Text Like "15*" Or txtchungtu(0).Text Like "64*" Then
             txtchungtu(0).Text = rs_ktra152!tkno
         Else
@@ -7790,6 +7791,9 @@ Private Sub Timer4_Timer()
                     Else
                         txtchungtu(5).Text = rs_ktra152!ttien
                         txtChungtu_LostFocus (5)
+                        If rs_ktra152!ttien = 0 Then
+                            txtchungtu(6).Text = 0
+                        End If
                         txtChungtu_KeyPress 6, 13
                     End If
                 Else
@@ -7884,7 +7888,7 @@ Private Sub Timer4_Timer()
                 txtchungtu(0) = .notk
             Else
                 txtchungtu(5).Text = .TgTThue
-               ' txtChungtu_KeyPress 5, 13
+                ' txtChungtu_KeyPress 5, 13
                 txtChungtu_KeyPress 6, 13
                 txtchungtu(0) = .cotk
             End If
