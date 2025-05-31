@@ -3343,8 +3343,49 @@ Private Sub DuyetItemList(ByVal fname As String)
     End If
 End Sub
 
+Private Sub DoNganhang()
+    Dim Query As String
+    Dim rs_ktra As Recordset
+    Query = "select * from tbNganhang"
+    Set rs_ktra = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
+    If Not rs_ktra.EOF Then
+        OptLoai(4).Value = True
+        OptLoai_LostFocus 0
+        RFocus CboThang
+        'Do While Not rs_ktra.EOF
+        Dim myDate As Date
+        myDate = CDate(rs_ktra!NgayGD)
+        txt(0).Text = rs_ktra!SHDon
 
+        CboThang.Text = Month(myDate) & "/" & Year(myDate)
+        MedNgay(0).Text = Format(rs_ktra!NgayGD, "dd/mm/yy")
+        MedNgay(1).Text = Format(rs_ktra!NgayGD, "dd/mm/yy")
+        txt(1).Text = rs_ktra!diengiai
+        If rs_ktra!TongTien <> 0 Then
+            txtchungtu(0).Text = rs_ktra!TkCo
+            txtChungtu_LostFocus 0
+            RFocus txtchungtu(1)
+            txtChungtu_LostFocus 1
+            RFocus txtchungtu(6)
+            txtchungtu(6).Text = rs_ktra!TongTien
+            txtChungtu_KeyPress 6, 13
+            '
+            txtchungtu(0).Text = rs_ktra!tkno
+            txtChungtu_LostFocus 0
+            RFocus txtchungtu(1)
+            txtChungtu_LostFocus 1
+            RFocus txtchungtu(5)
+            txtchungtu(5).Text = rs_ktra!TongTien
+            RFocus txtchungtu(6)
+            txtChungtu_KeyPress 6, 13
+        End If
+        rs_ktra.MoveNext
+        'Loop
+    End If
+End Sub
 Private Sub btnImport_Click()
+    DoNganhang
+    Exit Sub
     Set fileImportList = New Collection
     IsImport = True
     ' Duyet du lieu tu tb_import
@@ -4307,9 +4348,12 @@ Public Sub CmdChitiet_chon()
     If co > 0 And ((Left(taikhoan.sohieu, Len(TM)) = TM) Or (Left(taikhoan.sohieu, Len(NH)) = NH)) Then
         taikhoan.SoDuNgay ngay(0), n, c, X
         If n - c < co And IsImport = False Then
-            If MsgBox("Chi v­ît sè d­! TiÕp tôc ?", vbYesNo + vbCritical, App.ProductName) <> vbYes Then
-                RFocus txtchungtu(6)
-                Exit Sub
+            If FThuChi.FThuChiForm <> 1 Then
+
+                If MsgBox("Chi v­ît sè d­! TiÕp tôc ?", vbYesNo + vbCritical, App.ProductName) <> vbYes Then
+                    RFocus txtchungtu(6)
+                    Exit Sub
+                End If
             End If
         End If
     End If
@@ -11067,7 +11111,7 @@ Private Sub txtsh_LostFocus(Index As Integer)
         Set tkxt = New ClsTaikhoan
         tkxt.InitTaikhoanSohieu txtsh(0).Text
         txtsh(0).tag = IIf(tkxt.MaSo > 0 And tkxt.tkcon = 0, tkxt.MaSo, 0)
-        Lb(0).Caption = tkxt.Ten
+        lb(0).Caption = tkxt.Ten
         vis = (tkxt.tk_id = TKCNKH_ID Or tkxt.tk_id = TKCNPT_ID Or (tkxt.loai = 6 And pDTTP <> 0))
         If Left(txtsh(0).Text, 3) = "154" Then
             vis = True
@@ -11075,7 +11119,7 @@ Private Sub txtsh_LostFocus(Index As Integer)
 
         Label(19).Enabled = vis
         txtsh(1).Enabled = vis
-        Lb(1).Enabled = vis
+        lb(1).Enabled = vis
         cmd(1).Enabled = vis
         cmd(0).tag = IIf(tkxt.tk_id = TKCNKH_ID Or tkxt.tk_id = TKCNPT_ID, 1, IIf(tkxt.loai = 6 And pDTTP <> 0, 2, 0))
         Set tkxt = Nothing
@@ -11084,14 +11128,14 @@ Private Sub txtsh_LostFocus(Index As Integer)
             Set khxt = New ClsKhachHang
             khxt.InitKhachHangSohieu txtsh(1).Text
             txtsh(1).tag = khxt.MaSo
-            Lb(1).Caption = khxt.Ten
+            lb(1).Caption = khxt.Ten
             Set khxt = Nothing
         End If
         If cmd(0).tag = 2 Then
             Set tpxt = New Cls154
             tpxt.InitTPSohieu txtsh(1).Text
             txtsh(1).tag = tpxt.MaSo
-            Lb(1).Caption = tpxt.TenVattu
+            lb(1).Caption = tpxt.TenVattu
             Set tpxt = Nothing
         End If
 
@@ -11099,7 +11143,7 @@ Private Sub txtsh_LostFocus(Index As Integer)
             Set tpxt = New Cls154
             tpxt.InitTPSohieu txtsh(1).Text
             txtsh(1).tag = tpxt.MaSo
-            Lb(1).Caption = tpxt.TenVattu
+            lb(1).Caption = tpxt.TenVattu
             Set tpxt = Nothing
         End If
 

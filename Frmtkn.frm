@@ -1158,7 +1158,7 @@ Private Sub Command_Click(Index As Integer)
             If TkNhap.tkcon > 0 Then
                 Set rs_tk = DBKetoan.OpenRecordset("SELECT Top 1 HeThongTK.SoHieu FROM HethongTK" _
                     & " WHERE TkCha0=" + CStr(TkNhap.MaSo) + " AND MaNT<=0 ORDER BY SoHieu DESC", dbOpenSnapshot)
-                If rs_tk.RecordCount > 0 Then
+                If rs_tk.recordCount > 0 Then
                     Length = Len(rs_tk!sohieu)
                     On Error Resume Next
                     tail = CStr(CInt5(Right(rs_tk!sohieu, Length - Len(TkNhap.sohieu))) + 1)
@@ -1515,8 +1515,8 @@ With TkNhap
         rs_tk.MoveNext
     Loop
     CboNT.ListIndex = 0
-    GrdNT(0).Rows = IIf(rs_tk.RecordCount > GrdNT(0).tag, rs_tk.RecordCount, GrdNT(0).tag)
-    GrdNT(1).Rows = IIf(rs_tk.RecordCount > GrdNT(1).tag, rs_tk.RecordCount, GrdNT(1).tag)
+    GrdNT(0).Rows = IIf(rs_tk.recordCount > GrdNT(0).tag, rs_tk.recordCount, GrdNT(0).tag)
+    GrdNT(1).Rows = IIf(rs_tk.recordCount > GrdNT(1).tag, rs_tk.recordCount, GrdNT(1).tag)
     rs_tk.Close
     Set rs_tk = Nothing
 End With
