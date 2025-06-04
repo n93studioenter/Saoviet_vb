@@ -24,6 +24,18 @@ Begin VB.Form FrmChungtu
    Tag             =   "0"
    WhatsThisButton =   -1  'True
    WhatsThisHelp   =   -1  'True
+   Begin VB.Timer dlayNganhang 
+      Enabled         =   0   'False
+      Interval        =   300
+      Left            =   13320
+      Top             =   1560
+   End
+   Begin VB.Timer timerNganhang 
+      Enabled         =   0   'False
+      Interval        =   300
+      Left            =   13200
+      Top             =   1080
+   End
    Begin VB.CommandButton Command5 
       Caption         =   " Ho¸ ®¬n"
       BeginProperty Font 
@@ -3092,9 +3104,9 @@ Const TM = "111"
 Const NH = "112"
 
 Dim IsImport As Boolean
-
+Dim rs_ktraNH As Recordset
 Dim countbanhang As Integer
-
+Dim continute As Boolean
 Dim tempchungtu As String
 Dim phanloaict As Integer
 Dim rs_ktra152 As Recordset
@@ -3134,18 +3146,18 @@ Dim SetLoaiEnable As Boolean
 Dim shct As String
 Dim xddu As Boolean
 Dim TenTC As String, DiachiTC As String, ctgoc As String, TenNX As String, DiaChiNX As String, TenBH As String, DiaChiBH As String, MSTBH As String, unc1 As String, unc2 As String, unc3 As String, MaKHBH As Long, HanTT As Date
-Attribute DiachiTC.VB_VarUserMemId = 1073938473
-Attribute ctgoc.VB_VarUserMemId = 1073938473
-Attribute TenNX.VB_VarUserMemId = 1073938473
-Attribute DiaChiNX.VB_VarUserMemId = 1073938473
-Attribute TenBH.VB_VarUserMemId = 1073938473
-Attribute DiaChiBH.VB_VarUserMemId = 1073938473
-Attribute MSTBH.VB_VarUserMemId = 1073938473
-Attribute unc1.VB_VarUserMemId = 1073938473
-Attribute unc2.VB_VarUserMemId = 1073938473
-Attribute unc3.VB_VarUserMemId = 1073938473
-Attribute MaKHBH.VB_VarUserMemId = 1073938473
-Attribute HanTT.VB_VarUserMemId = 1073938473
+Attribute DiachiTC.VB_VarUserMemId = 1073938474
+Attribute ctgoc.VB_VarUserMemId = 1073938474
+Attribute TenNX.VB_VarUserMemId = 1073938474
+Attribute DiaChiNX.VB_VarUserMemId = 1073938474
+Attribute TenBH.VB_VarUserMemId = 1073938474
+Attribute DiaChiBH.VB_VarUserMemId = 1073938474
+Attribute MSTBH.VB_VarUserMemId = 1073938474
+Attribute unc1.VB_VarUserMemId = 1073938474
+Attribute unc2.VB_VarUserMemId = 1073938474
+Attribute unc3.VB_VarUserMemId = 1073938474
+Attribute MaKHBH.VB_VarUserMemId = 1073938474
+Attribute HanTT.VB_VarUserMemId = 1073938474
 Dim HD() As tpHoaDon, hdcount As Integer
 Attribute HD.VB_VarUserMemId = 1073938459
 Attribute hdcount.VB_VarUserMemId = 1073938459
@@ -3343,45 +3355,70 @@ Private Sub DuyetItemList(ByVal fname As String)
     End If
 End Sub
 
-Private Sub DoNganhang()
-    Dim Query As String
-    Dim rs_ktra As Recordset
-    Query = "select * from tbNganhang"
-    Set rs_ktra = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
-    If Not rs_ktra.EOF Then
-        OptLoai(4).Value = True
-        OptLoai_LostFocus 0
-        RFocus CboThang
-        'Do While Not rs_ktra.EOF
-        Dim myDate As Date
-        myDate = CDate(rs_ktra!NgayGD)
-        txt(0).Text = rs_ktra!SHDon
+Public Sub DoSubNganhang()
+    FThuChi.FThuChiForm = 3
+    OptLoai(4).Value = True
+    OptLoai_LostFocus 0
+    RFocus CboThang
+    continute = True
+    Dim myDate As Date
+    myDate = CDate(rs_ktraNH!NgayGD)
+    txt(0).Text = rs_ktraNH!SHDon
 
-        CboThang.Text = Month(myDate) & "/" & Year(myDate)
-        MedNgay(0).Text = Format(rs_ktra!NgayGD, "dd/mm/yy")
-        MedNgay(1).Text = Format(rs_ktra!NgayGD, "dd/mm/yy")
-        txt(1).Text = rs_ktra!diengiai
-        If rs_ktra!TongTien <> 0 Then
-            txtchungtu(0).Text = rs_ktra!TkCo
-            txtChungtu_LostFocus 0
-            RFocus txtchungtu(1)
-            txtChungtu_LostFocus 1
-            RFocus txtchungtu(6)
-            txtchungtu(6).Text = rs_ktra!TongTien
-            txtChungtu_KeyPress 6, 13
-            '
-            txtchungtu(0).Text = rs_ktra!tkno
-            txtChungtu_LostFocus 0
-            RFocus txtchungtu(1)
-            txtChungtu_LostFocus 1
-            RFocus txtchungtu(5)
-            txtchungtu(5).Text = rs_ktra!TongTien
-            RFocus txtchungtu(6)
-            txtChungtu_KeyPress 6, 13
-        End If
-        rs_ktra.MoveNext
-        'Loop
+    CboThang.Text = Month(myDate) & "/" & Year(myDate)
+    MedNgay(0).Text = Format(rs_ktraNH!NgayGD, "dd/mm/yy")
+    MedNgay(1).Text = Format(rs_ktraNH!NgayGD, "dd/mm/yy")
+    txt(1).Text = rs_ktraNH!diengiai
+    If rs_ktraNH!TongTien <> 0 Then
+        txtchungtu(0).Text = rs_ktraNH!TkCo
+        txtChungtu_LostFocus 0
+        RFocus txtchungtu(1)
+        txtChungtu_LostFocus 1
+        RFocus txtchungtu(6)
+        txtchungtu(6).Text = rs_ktraNH!TongTien
+        txtChungtu_KeyPress 6, 13
+        '
+        txtchungtu(0).Text = rs_ktraNH!tkno
+        txtChungtu_LostFocus 0
+        RFocus txtchungtu(1)
+        txtChungtu_LostFocus 1
+        RFocus txtchungtu(5)
+        txtchungtu(5).Text = rs_ktraNH!TongTien
+        RFocus txtchungtu(6)
+        txtChungtu_KeyPress 6, 13
+        Command_Click 1
+    Else
+        txtchungtu(0).Text = rs_ktraNH!tkno
+        txtChungtu_LostFocus 0
+        RFocus txtchungtu(1)
+        txtChungtu_LostFocus 1
+        RFocus txtchungtu(5)
+        txtchungtu(5).Text = rs_ktraNH!TongTien2
+        RFocus txtchungtu(6)
+        txtChungtu_KeyPress 6, 13
+        txtchungtu(0).Text = rs_ktraNH!TkCo
+        txtChungtu_LostFocus 0
+        RFocus txtchungtu(1)
+        txtChungtu_LostFocus 1
+        RFocus txtchungtu(6)
+        txtchungtu(6).Text = rs_ktraNH!TongTien2
+        txtChungtu_KeyPress 6, 13
+        dlayNganhang.Enabled = True
     End If
+    rs_ktraNH.MoveNext
+    timerNganhang.Enabled = True
+
+End Sub
+
+Private Sub DoNganhang()
+
+    Dim Query As String
+    Query = "select * from tbNganhang"
+    Set rs_ktraNH = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
+    If Not rs_ktraNH.EOF Then
+        DoSubNganhang
+    End If
+    
 End Sub
 Private Sub btnImport_Click()
     DoNganhang
@@ -4348,7 +4385,7 @@ Public Sub CmdChitiet_chon()
     If co > 0 And ((Left(taikhoan.sohieu, Len(TM)) = TM) Or (Left(taikhoan.sohieu, Len(NH)) = NH)) Then
         taikhoan.SoDuNgay ngay(0), n, c, X
         If n - c < co And IsImport = False Then
-            If FThuChi.FThuChiForm <> 1 Then
+            If FThuChi.FThuChiForm <> 1 And FThuChi.FThuChiForm <> 3 Then
 
                 If MsgBox("Chi v­ît sè d­! TiÕp tôc ?", vbYesNo + vbCritical, App.ProductName) <> vbYes Then
                     RFocus txtchungtu(6)
@@ -6880,6 +6917,11 @@ Private Sub Command5_Click()
       frmBrowser.Show vbModal
 End Sub
 
+Private Sub dlayNganhang_Timer()
+    dlayNganhang.Enabled = False
+    Command_Click 1
+End Sub
+
 Private Sub Form_Activate()
     countbanhang = 1
     Dim ithang As Integer
@@ -7777,15 +7819,16 @@ Private Sub Timer3_Timer()
     IndexFirst = IndexFirst + 1
     Dim item2 As ClsFileImport
 
-     
+
     If IndexFirst <= fileImportList.count Then
         Set item2 = fileImportList(IndexFirst)
         Xulyimport item2
     Else
         ' Code to execute if the condition is not met
-
-        MsgBox "Duyet xong"
-        FThuChi.FThuChiForm = 0
+        If FThuChi.FThuChiForm <> 3 Then
+            MsgBox "Duyet xong"
+            FThuChi.FThuChiForm = 0
+        End If
     End If
 End Sub
 
@@ -7955,6 +7998,13 @@ End Sub
 Private Sub timerImport_Timer()
     timerImport.Enabled = False
     btnImport_Click
+End Sub
+
+Private Sub timerNganhang_Timer()
+    timerNganhang.Enabled = False
+    If Not rs_ktraNH.EOF Then
+        DoSubNganhang
+    End If
 End Sub
 
 Private Sub txt_Click(Index As Integer)

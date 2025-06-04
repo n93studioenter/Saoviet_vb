@@ -422,7 +422,7 @@ Private Sub Form_Activate()
            
            ComboBox1.Text = rs_chungtu!bb
         End If
-        If FThuChiForm = 1 Then
+        If FThuChiForm = 1 Or FThuChiForm = 3 Then
         Command_Click
         End If
         If FThuChiForm = 2 Then
