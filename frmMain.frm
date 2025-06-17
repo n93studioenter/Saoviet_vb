@@ -445,19 +445,23 @@ Begin VB.Form frmMain
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Object.Width           =   8819
             MinWidth        =   8819
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Object.Width           =   12347
             MinWidth        =   12347
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel4 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Style           =   6
-            TextSave        =   "19/05/25"
+            TextSave        =   "16/06/25"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -2378,7 +2382,7 @@ End Sub
 Private Sub Form_Activate()    ' viet menu
        
     'Kiemtraphienban
-    FindLatestExe
+   ' FindLatestExe
     Image1.Left = (Me.ScaleWidth * 87 / 100)
     Image1.Top = (Me.ScaleHeight * 5 / 100)
     Command1.Left = (Me.ScaleWidth * 90 / 100)
@@ -2478,7 +2482,8 @@ End Sub
 Private Sub Form_Load()
     Dim X1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer
                 
-    If findwindowpartial("Microsoft Word") = 0 And findwindowpartial("Microsoft Excel") = 0 Then
+    If 1 > 2 And findwindowpartial("Microsoft Word") = 0 And findwindowpartial("Microsoft Excel") = 0 Then
+        
         SendMessage HWND_BROADCAST, WM_FONTCHANGE, 0, 0
         DoEvents
  

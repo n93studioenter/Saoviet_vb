@@ -348,11 +348,12 @@ Public Sub Command_Click()
     FrmChungtu.Checkinbangkevahoadon.Value = Checkinbangkevahoadon.Value
     Unload Me
     If FThuChiForm = 1 Then
-        FrmChungtu.DoneSetup
+        ' FrmChungtu.DoneSetup
+        FrmChungtu.timerNext.Enabled = True
     End If
 
     If FThuChiForm = 2 Then
-        FrmChungtu.Timer5.Enabled = True
+        FrmChungtu.timerNext.Enabled = True
     End If
 End Sub
 

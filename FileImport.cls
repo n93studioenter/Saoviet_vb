@@ -34,6 +34,7 @@ Private m_TgTCThue As String
 Private m_TgTThue As String
 Private m_Vat As String
 Private m_SohieuTP As String
+Private m_IsHaschild As String
 Public Property Get id() As String
     id = m_ID
 End Property
@@ -163,4 +164,10 @@ End Property
 End Property
 Public Property Let sohieutp(Value As String)
     m_SohieuTP = Value
+End Property
+ Public Property Get Ishaschild() As String
+    Ishaschild = m_IsHaschild
+End Property
+Public Property Let Ishaschild(Value As String)
+    m_IsHaschild = Value
 End Property
