@@ -25,13 +25,12 @@ Begin VB.Form FrmChungtu
    WhatsThisButton =   -1  'True
    WhatsThisHelp   =   -1  'True
    Begin VB.CommandButton Command6 
-      Caption         =   "Command6"
-      Height          =   555
-      Left            =   11640
+      Caption         =   "Import Ngan hang"
+      Height          =   435
+      Left            =   9000
       TabIndex        =   175
-      Top             =   7200
-      Visible         =   0   'False
-      Width           =   1335
+      Top             =   4680
+      Width           =   1575
    End
    Begin VB.Timer t331 
       Enabled         =   0   'False
@@ -47,7 +46,7 @@ Begin VB.Form FrmChungtu
    End
    Begin VB.Timer timerNext 
       Enabled         =   0   'False
-      Interval        =   250
+      Interval        =   100
       Left            =   10320
       Top             =   8520
    End
@@ -67,9 +66,9 @@ Begin VB.Form FrmChungtu
    End
    Begin VB.Timer dlayNganhang 
       Enabled         =   0   'False
-      Interval        =   1000
-      Left            =   13320
-      Top             =   1560
+      Interval        =   200
+      Left            =   10680
+      Top             =   4080
    End
    Begin VB.Timer timerNganhang 
       Enabled         =   0   'False
@@ -3458,18 +3457,30 @@ Public Sub DoSubNganhang()
         RFocus txtchungtu(6)
         txtchungtu(6).Text = rs_ktraNH!TongTien
         txtChungtu_KeyPress 6, 13
-       
-        txtchungtu(0).Text = rs_ktraNH!tkno
-        txtChungtu_LostFocus 0
-        RFocus txtchungtu(1)
-        txtChungtu_LostFocus 1
-        'RFocus txtchungtu(5)
-        'txtchungtu(5).Text = rs_ktraNH!TongTien
-        'txtChungtu_LostFocus 5
-        'RFocus txtchungtu(6)
-        txtChungtu_KeyPress 6, 13
-        dlayNganhang.Enabled = True
-        'Command_Click 1
+
+        If rs_ktraNH!tkno Like "*|*" Then
+            Dim parts() As String
+            parts = Split(rs_ktraNH!tkno, "|")
+            
+            
+            txtchungtu(0).Text = parts(0)
+            txtChungtu_LostFocus 0
+              txtchungtu(2).Text = parts(1)
+            txtChungtu_LostFocus 2
+            
+            
+            RFocus txtchungtu(1)
+            txtChungtu_LostFocus 1
+            txtChungtu_KeyPress 6, 13
+            dlayNganhang.Enabled = True
+        Else
+            txtchungtu(0).Text = rs_ktraNH!tkno
+            txtChungtu_LostFocus 0
+            RFocus txtchungtu(1)
+            txtChungtu_LostFocus 1
+            txtChungtu_KeyPress 6, 13
+            dlayNganhang.Enabled = True
+        End If
     Else
         txtchungtu(0).Text = rs_ktraNH!tkno
         txtChungtu_LostFocus 0
@@ -3480,7 +3491,7 @@ Public Sub DoSubNganhang()
         RFocus txtchungtu(6)
         txtChungtu_KeyPress 6, 13
 
-       
+
 
         txtchungtu(0).Text = rs_ktraNH!TkCo
         txtChungtu_LostFocus 0
@@ -3503,7 +3514,7 @@ End Sub
 Private Sub DoNganhang()
     sttnganhang = 0
     Dim Query As String
-    Query = "select * from tbNganhang"
+    Query = "select * from tbNganhang where status=0"
     Set rs_ktraNH = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
     If Not rs_ktraNH.EOF Then
         DoSubNganhang
@@ -4206,6 +4217,7 @@ Private Sub Xuly51CTChild()
     txtchungtu(0) = rs_import!tkno
     txtChungtu_LostFocus (0)
     txtChungtu_KeyPress 6, 13
+    timerNext.Enabled = True
 End Sub
 Private Sub Xuly51Child()
     stt51 = stt51 + 1
@@ -4224,10 +4236,26 @@ Private Sub Xuly51Child()
             txtchungtu(6).Text = rs_ktra152!ttien
             txtChungtu_KeyPress 6, 13
         Else
-            txtchungtu(2).Text = rs_ktra152!sohieu
-            txtChungtu_LostFocus (2)
-            txtchungtu(3).Text = rs_ktra152!SoLuong
-            txtChungtu_LostFocus (3)
+            RFocus txtchungtu(1)
+            txtChungtu_LostFocus (1)
+
+
+            'Kiem tra so hieu ton tai
+            Dim rs_ktraVattu As Recordset
+            Dim Query As String
+
+            Query = "SELECT * FROM Vattu WHERE SoHieu='" & rs_ktra152!sohieu & "'"
+            Set rs_ktraVattu = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
+            If Not rs_ktraVattu.EOF Then
+                txtchungtu(2).Text = rs_ktra152!sohieu
+                txtChungtu_LostFocus (2)
+                txtchungtu(3).Text = rs_ktra152!SoLuong
+                txtChungtu_LostFocus (3)
+            Else
+                ' Không có d? li?u trong recordset
+            End If
+
+
             RFocus txtchungtu(4)
             txtchungtu(5).Text = 0
             txtchungtu(6).Text = rs_ktra152!ttien
@@ -4256,6 +4284,7 @@ Private Sub Xuly51Child()
         txtchungtu(0) = rs_import!tkno
         txtChungtu_LostFocus (0)
         txtChungtu_KeyPress 6, 13
+        timerNext.Enabled = True
     End If
 End Sub
 
@@ -4358,6 +4387,7 @@ Private Sub XulyMiddle(ByRef rs_import As Recordset)
         If rs_import!sohieutp = "" Or IsNull(rs_import!sohieutp) Then
             Query = "SELECT * FROM tbimportdetail WHERE ParentId='" & rs_import!id & "'"
             Set rs_ktra152 = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
+            
             Xuly51Child
         Else
             Xuly51CTChild
@@ -4964,7 +4994,7 @@ Public Sub CmdChitiet_chon()
     If co > 0 And ((Left(taikhoan.sohieu, Len(TM)) = TM) Or (Left(taikhoan.sohieu, Len(NH)) = NH)) Then
         taikhoan.SoDuNgay ngay(0), n, c, X
         If n - c < co And IsImport = False Then
-            If FThuChi.FThuChiForm <> 1 And FThuChi.FThuChiForm <> 2 Then
+            If FThuChi.FThuChiForm <> 1 And FThuChi.FThuChiForm <> 2 And FThuChi.FThuChiForm <> 3 Then
 
                 If MsgBox("Chi v­ît sè d­! TiÕp tôc ?", vbYesNo + vbCritical, App.ProductName) <> vbYes Then
                     RFocus txtchungtu(6)
@@ -7511,6 +7541,9 @@ End Sub
 Private Sub dlayNganhang_Timer()
     dlayNganhang.Enabled = False
     Command_Click 1
+    'Cap status ngan hang
+    ExecuteSQL5 "UPDATE tbNganhang SET Status = 1 where ID= " & rs_ktraNH!id & ""
+
     rs_ktraNH.MoveNext
     timerNganhang.Enabled = True
 End Sub
@@ -11765,7 +11798,7 @@ Private Sub txtsh_LostFocus(Index As Integer)
         Set tkxt = New ClsTaikhoan
         tkxt.InitTaikhoanSohieu txtsh(0).Text
         txtsh(0).tag = IIf(tkxt.MaSo > 0 And tkxt.tkcon = 0, tkxt.MaSo, 0)
-        lb(0).Caption = tkxt.Ten
+        Lb(0).Caption = tkxt.Ten
         vis = (tkxt.tk_id = TKCNKH_ID Or tkxt.tk_id = TKCNPT_ID Or (tkxt.loai = 6 And pDTTP <> 0))
         If Left(txtsh(0).Text, 3) = "154" Then
             vis = True
@@ -11773,7 +11806,7 @@ Private Sub txtsh_LostFocus(Index As Integer)
 
         Label(19).Enabled = vis
         txtsh(1).Enabled = vis
-        lb(1).Enabled = vis
+        Lb(1).Enabled = vis
         cmd(1).Enabled = vis
         cmd(0).tag = IIf(tkxt.tk_id = TKCNKH_ID Or tkxt.tk_id = TKCNPT_ID, 1, IIf(tkxt.loai = 6 And pDTTP <> 0, 2, 0))
         Set tkxt = Nothing
@@ -11782,14 +11815,14 @@ Private Sub txtsh_LostFocus(Index As Integer)
             Set khxt = New ClsKhachHang
             khxt.InitKhachHangSohieu txtsh(1).Text
             txtsh(1).tag = khxt.MaSo
-            lb(1).Caption = khxt.Ten
+            Lb(1).Caption = khxt.Ten
             Set khxt = Nothing
         End If
         If cmd(0).tag = 2 Then
             Set tpxt = New Cls154
             tpxt.InitTPSohieu txtsh(1).Text
             txtsh(1).tag = tpxt.MaSo
-            lb(1).Caption = tpxt.TenVattu
+            Lb(1).Caption = tpxt.TenVattu
             Set tpxt = Nothing
         End If
 
@@ -11797,7 +11830,7 @@ Private Sub txtsh_LostFocus(Index As Integer)
             Set tpxt = New Cls154
             tpxt.InitTPSohieu txtsh(1).Text
             txtsh(1).tag = tpxt.MaSo
-            lb(1).Caption = tpxt.TenVattu
+            Lb(1).Caption = tpxt.TenVattu
             Set tpxt = Nothing
         End If
 
