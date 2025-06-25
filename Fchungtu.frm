@@ -4254,8 +4254,6 @@ Private Sub Xuly51Child()
             Else
                 ' Không có d? li?u trong recordset
             End If
-
-
             RFocus txtchungtu(4)
             txtchungtu(5).Text = 0
             txtchungtu(6).Text = rs_ktra152!ttien
@@ -4430,6 +4428,7 @@ Private Sub timerNext_Timer()
 
 End Sub
 Private Sub btnImportXML_Click()
+    'IsImport = True
     stt51 = 0
     sttTongHop = 0
     'Khai bao
@@ -4464,6 +4463,7 @@ Private Sub btnOpenexe_Click()
 
     ' Shell d? m? ?ng d?ng
     Shell exePath, vbNormalFocus
+    Exit Sub
     DoEvents  ' Ð? d?m b?o ?ng d?ng có th?i gian kh?i d?ng
 
     ' L?y handle c?a c?a s? ?ng d?ng
@@ -6626,15 +6626,20 @@ Public Sub Command_Click(Index As Integer)
     End If
     Dim so_dem
     so_dem = kiem_tra_333_133
-    If IsImport = False Then
+    ' If IsImport = False Or FThuChi.FThuChiForm = 0 Then
+    If FThuChi.FThuChiForm = 0 Then
         ngay(0) = CVDate(MedNgay(0).Text)
         ngay(1) = CVDate(MedNgay(1).Text)
     Else
-        If IndexFirst <= fileImportList.count Then
-            With fileImportList(IndexFirst)
-                ngay(0) = .ngay
-                ngay(1) = .ngay
-            End With
+        'If IndexFirst <= fileImportList.count Then
+        'With fileImportList(IndexFirst)
+        'ngay(0) = .ngay
+        'ngay(1) = .ngay
+        'End With
+        'End If
+        If Not rs_import.EOF Then
+            ngay(0) = rs_import!NLap
+            ngay(1) = rs_import!NLap
         End If
     End If
 
@@ -6902,7 +6907,7 @@ Public Sub Command_Click(Index As Integer)
                     If pSoVV > 0 And CboVV(0).ListIndex >= 0 Then chungtu.MaDT1 = CboVV(0).ItemData(CboVV(0).ListIndex)
                     If pSoVV > 1 And CboVV(1).ListIndex >= 0 Then chungtu.MaDT2 = CboVV(1).ItemData(CboVV(1).ListIndex)
                     If pSoVV > 2 And CboVV(2).ListIndex >= 0 Then chungtu.MaDT3 = CboVV(2).ItemData(CboVV(2).ListIndex)
-                    If IsImport = False Then
+                    If FThuChi.FThuChiForm = 0 Then
                         chungtu.NgayCT = MedNgay(0).Text
                         chungtu.NgayGS = MedNgay(1).Text
                     End If
