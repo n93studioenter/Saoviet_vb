@@ -4219,6 +4219,36 @@ Private Sub Xuly51CTChild()
     txtChungtu_KeyPress 6, 13
     timerNext.Enabled = True
 End Sub
+Private Sub Xuly51None()
+    stt51 = stt51 + 1
+    txtchungtu(0).Text = rs_import!TkCo
+    txtChungtu_LostFocus (0)
+    txtchungtu(5).Text = 0
+    RFocus txtchungtu(6)
+    txtchungtu(6).Text = rs_import!TgTCThue
+    txtChungtu_KeyPress 6, 13
+
+    Dim myDate As Date
+    myDate = CDate(rs_import!NLap)
+    CboThang.Text = Month(myDate) & "/" & Year(myDate)
+    MedNgay(0).Text = Format(myDate, "dd/mm/yy")
+    MedNgay(1).Text = Format(myDate, "dd/mm/yy")
+
+    txtchungtu(0) = rs_import!tkThue
+
+    txtChungtu_LostFocus (0)
+    txtchungtu(2).Text = rs_import!VAT
+    txtChungtu_LostFocus (2)
+
+    txtChungtu_KeyPress 6, 13
+
+    txtchungtu(0) = rs_import!tkno
+    txtChungtu_LostFocus (0)
+    If stt51 = 1 Then
+        txtChungtu_KeyPress 6, 13
+    End If
+    timerNext.Enabled = True
+End Sub
 Private Sub Xuly51Child()
     stt51 = stt51 + 1
     'Xu ly Detail
@@ -4383,10 +4413,14 @@ Private Sub XulyMiddle(ByRef rs_import As Recordset)
         FThuChi.FThuChiForm = 2
         'Kiem tra xem no co phai la cong trinh hay khong
         If rs_import!sohieutp = "" Or IsNull(rs_import!sohieutp) Then
-            Query = "SELECT * FROM tbimportdetail WHERE ParentId='" & rs_import!id & "'"
-            Set rs_ktra152 = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
-            
-            Xuly51Child
+            'Truong hop co chi tiet
+            If rs_import!Ishaschild = 1 Then
+                Query = "SELECT * FROM tbimportdetail WHERE ParentId='" & rs_import!id & "'"
+                Set rs_ktra152 = DBKetoan.OpenRecordset(Query, dbOpenSnapshot)
+                Xuly51Child
+            Else
+                Xuly51None
+            End If
         Else
             Xuly51CTChild
         End If

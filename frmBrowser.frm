@@ -37,7 +37,7 @@ Begin VB.Form frmBrowser
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   ""
+      Location        =   "http:///"
    End
 End
 Attribute VB_Name = "frmBrowser"
@@ -51,11 +51,11 @@ Private Sub Form_Load()
     mypath = App.path & "\Hoadon"
     Dim LoaiHD As String
     If FrmChungtu.txtPhanloaichungtu.Text = 1 Or FrmChungtu.txtPhanloaichungtu.Text = 0 Then
-        LoaiHD = "\HDVaoChonLoc"
+        LoaiHD = "\HDVao"
     Else
-        LoaiHD = "\HDRaChonLoc"
+        LoaiHD = "\HDRa"
     End If
-    mypath = mypath & LoaiHD & "\" & Month(CDate(FrmChungtu.CboThang.Text)) & "\HD__" & Month(CDate(FrmChungtu.CboThang.Text)) & "_" & FrmChungtu.txt(0).Text & "_" & FrmChungtu.txtVT(1).Text & ".html"
+    mypath = mypath & LoaiHD & "\" & Month(CDate(FrmChungtu.CboThang.Text)) & "\" & FrmChungtu.txt(0).Text & "_" & FrmChungtu.txtVT(1).Text & ".html"
     'MsgBox FrmChungtu.txt(0).Text
     Dim FilePath As String
     FilePath = mypath
