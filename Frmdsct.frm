@@ -1877,7 +1877,7 @@ chuoidieukien_intoanbo = sql
         End If
         rs_chungtu.MoveNext
     Loop
-    FrmChungtu.Label(28).Caption = "Tæng sè chøng tõ: " + str(rs_chungtu.RecordCount)
+    FrmChungtu.Label(28).Caption = "Tæng sè chøng tõ: " + str(rs_chungtu.recordCount)
         Dim kk
     kk = 0
     Do While kk <> 10
@@ -1896,14 +1896,14 @@ chuoidieukien_intoanbo = sql
     Loop
     
     
-    If rs_chungtu.RecordCount > 0 Then
-        If Row >= rs_chungtu.RecordCount Then Row = rs_chungtu.RecordCount - 1
+    If rs_chungtu.recordCount > 0 Then
+        If Row >= rs_chungtu.recordCount Then Row = rs_chungtu.recordCount - 1
     Else
         Row = 0
     End If
   
 '    GrdChungtu.Rows = IIf(rs_chungtu.RecordCount > GrdChungtu.tag, IIf(rs_chungtu.RecordCount > MaxGridRow, MaxGridRow, rs_chungtu.RecordCount), GrdChungtu.tag)' chuyen thanh maxrows
-    LbSoCT.Caption = CStr(rs_chungtu.RecordCount)
+    LbSoCT.Caption = CStr(rs_chungtu.recordCount)
     GrdChungtu.col = 0
     rs_chungtu.Close
     Set rs_chungtu = Nothing
@@ -2101,7 +2101,7 @@ sql = " select a.* from (select top 500 tong.* from (" + sql + ") tong) a order 
         End If
         rs_chungtu.MoveNext
     Loop
-    FrmChungtu.Label(28).Caption = "Tæng sè chøng tõ: " + str(rs_chungtu.RecordCount)
+    FrmChungtu.Label(28).Caption = "Tæng sè chøng tõ: " + str(rs_chungtu.recordCount)
     
     Dim kk
     kk = 0
@@ -2114,14 +2114,14 @@ sql = " select a.* from (select top 500 tong.* from (" + sql + ") tong) a order 
    
                 so_cong = so_cong + 1
     Loop
-    If rs_chungtu.RecordCount > 0 Then
-        If Row >= rs_chungtu.RecordCount Then Row = rs_chungtu.RecordCount - 1
+    If rs_chungtu.recordCount > 0 Then
+        If Row >= rs_chungtu.recordCount Then Row = rs_chungtu.recordCount - 1
     Else
         Row = 0
     End If
   
 '    GrdChungtu.Rows = IIf(rs_chungtu.RecordCount > GrdChungtu.tag, IIf(rs_chungtu.RecordCount > MaxGridRow, MaxGridRow, rs_chungtu.RecordCount), GrdChungtu.tag)
-    LbSoCT.Caption = CStr(rs_chungtu.RecordCount)
+    LbSoCT.Caption = CStr(rs_chungtu.recordCount)
     GrdChungtu.col = 0
     rs_chungtu.Close
     Set rs_chungtu = Nothing

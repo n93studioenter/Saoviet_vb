@@ -3461,14 +3461,14 @@ Public Sub DoSubNganhang()
         If rs_ktraNH!tkno Like "*|*" Then
             Dim parts() As String
             parts = Split(rs_ktraNH!tkno, "|")
-            
-            
+
+
             txtchungtu(0).Text = parts(0)
             txtChungtu_LostFocus 0
-              txtchungtu(2).Text = parts(1)
+            txtchungtu(2).Text = parts(1)
             txtChungtu_LostFocus 2
-            
-            
+
+
             RFocus txtchungtu(1)
             txtChungtu_LostFocus 1
             txtChungtu_KeyPress 6, 13
@@ -3492,11 +3492,21 @@ Public Sub DoSubNganhang()
         txtChungtu_KeyPress 6, 13
 
 
+        If rs_ktraNH!TkCo Like "*|*" Then
+            parts = Split(rs_ktraNH!TkCo, "|")
+            txtchungtu(0).Text = parts(0)
+            txtChungtu_LostFocus 0
+            RFocus txtchungtu(1)
+            txtChungtu_LostFocus 1
+            txtchungtu(2).Text = parts(1)
+            txtChungtu_LostFocus 2
+        Else
+            txtchungtu(0).Text = rs_ktraNH!TkCo
+            txtChungtu_LostFocus 0
+            RFocus txtchungtu(1)
+            txtChungtu_LostFocus 1
 
-        txtchungtu(0).Text = rs_ktraNH!TkCo
-        txtChungtu_LostFocus 0
-        RFocus txtchungtu(1)
-        txtChungtu_LostFocus 1
+        End If
         'RFocus txtchungtu(6)
         txtchungtu(6).Text = rs_ktraNH!TongTien2
         If sttnganhang = 0 Then
@@ -6671,9 +6681,11 @@ Public Sub Command_Click(Index As Integer)
         'ngay(1) = .ngay
         'End With
         'End If
-        If Not rs_import.EOF Then
-            ngay(0) = rs_import!NLap
-            ngay(1) = rs_import!NLap
+        If Not rs_import Is Nothing Then
+            If Not rs_import.EOF Then
+                ngay(0) = rs_import!NLap
+                ngay(1) = rs_import!NLap
+            End If
         End If
     End If
 
